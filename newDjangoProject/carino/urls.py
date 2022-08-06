@@ -12,4 +12,6 @@ urlpatterns = [
     path('<int:pk>/results/', views.ResultsView.as_view(), name='doctorresults'),
     # ex: /carino/5/vote/
     path('<int:question_id>/vote/', views.vote, name='shotorvote'),
+
+    path('/cars', views.CarsListView.as_view() , name = 'carsListView')
 ]

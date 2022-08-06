@@ -1,0 +1,9 @@
+{% if cars_list %}
+    <ul>
+    {% for car in cars_list %}
+    <li>{{ car }} - {{ car.car_model }}</li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No car is in the list.</p>
+{% endif %}

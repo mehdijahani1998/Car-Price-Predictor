@@ -32,6 +32,9 @@ class Car(models.Model):
     production_year = models.IntegerField()
     mileage = models.IntegerField()
 
+    # class Meta:
+    #     ordering = ('manufacturer', 'car_model')
+
     def __str__(self) -> str:
         return self.manufacturer + '-' + self.car_model + '-' + str(self.price) + '-' + str(self.production_year)
 

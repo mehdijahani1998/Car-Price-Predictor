@@ -7,7 +7,7 @@ from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.views import generic
 
-from .models import Question, Choice
+from .models import Car, Question, Choice
 
 class IndexView(generic.ListView):
     template_name = 'carino/index.html'
@@ -48,3 +48,14 @@ def vote(request, question_id):
         # with POST data. This prevents data from being posted twice if a
         # user hits the Back button.
         return HttpResponseRedirect(reverse('carino:doctorresults', args=(question.id,)))
+
+### carino main pages come here. everything before that was from django tutorial itself.
+
+class CarsListView(generic.ListView):
+    model = Car
+    template_name = 'carino/carsList.html'
+
+    context_object_name = 'cars_list'
+    def get_queryset(self):
+        """Return all cars in the database."""
+        return Car.objects.order_by().values_list('manufacturer', 'car_model').distinct()

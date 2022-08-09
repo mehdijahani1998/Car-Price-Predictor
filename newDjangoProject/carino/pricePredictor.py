@@ -56,3 +56,9 @@ class PricePredictor:
         estimatedPrice = self.clf.predict(newCarData)
         return estimatedPrice[0]
 
+    def getPreparedPricePredictor(self):
+        self.fillQuerySet()
+        self.fillSpecificationLists()
+        self.fillSpecificationsDicts()
+        self.trainCLF()
+

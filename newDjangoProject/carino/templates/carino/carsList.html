@@ -1,7 +1,7 @@
 {% if cars_list %}
     <ul>
     {% for car in cars_list %}
-    <li>{{ car }} - {{ car.car_model }}</li>
+    <li>{{ car.0 }} - {{ car.1 }}</li>
     {% endfor %}
     </ul>
 {% else %}

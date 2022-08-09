@@ -54,8 +54,9 @@ def vote(request, question_id):
 class CarsListView(generic.ListView):
     model = Car
     template_name = 'carino/carsList.html'
-
+    
     context_object_name = 'cars_list'
     def get_queryset(self):
         """Return all cars in the database."""
-        return Car.objects.order_by().values_list('manufacturer', 'car_model').distinct()
+        querySetresult = Car.objects.values_list('manufacturer', 'car_model').distinct()
+        return querySetresult

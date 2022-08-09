@@ -1,3 +1,4 @@
+<h1>Available manufacturers</h1>
 {% if cars_list %}
     <ul>
     {% for car in cars_list %}
@@ -7,3 +8,5 @@
 {% else %}
     <p>No car is in the list.</p>
 {% endif %}
+
+<a href="{% url 'carino:addMoreRecords'%}">Do you want to add more records?</a>

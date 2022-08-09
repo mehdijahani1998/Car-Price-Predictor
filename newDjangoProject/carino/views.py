@@ -3,10 +3,11 @@
 from multiprocessing import context
 from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.template import loader
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
-from django.views import generic
+from django.views import generic, View
 
+from .truecarDataCollector import DataCollector
 from .pricePredictor import PricePredictor
 from .models import Car ,Question, Choice
 
@@ -119,7 +120,7 @@ def carResultsView(request, car_manufacturer):
 
     return render(request, 'carino/carResults.html', context)
 
-def showCarDetails(request, car_manufacturer):
+def showCarDetails (request, car_manufacturer):
     availableModels = Car.objects.filter(manufacturer = car_manufacturer).values_list('car_model').distinct()
     availableCategories = Car.objects.filter(manufacturer = car_manufacturer).values_list('category').distinct()
     
@@ -130,3 +131,18 @@ def showCarDetails(request, car_manufacturer):
     }
 
     return render(request, 'carino/carDetail.html', context)
+
+class AwesomeView(View) :
+
+    def get(self, request):
+        return render(request, 'carino/addCarRecord.html')
+
+    def post(self, request):
+        carManufacturer = request.POST['manf']
+        numberOfPages = int(request.POST['number_of_pages'])
+
+        dataCollector = DataCollector()
+        dataCollector.insertFromSoupToDB(carManufacturer, numberOfPages)
+
+        del dataCollector
+        return  (request.path)

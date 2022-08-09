@@ -13,5 +13,7 @@ urlpatterns = [
     # ex: /carino/5/vote/
     path('<int:question_id>/vote/', views.vote, name='shotorvote'),
 
-    path('cars/', views.CarsListView.as_view() , name = 'carsListView')
+    path('cars/', views.CarsListView.as_view() , name = 'carsListView'),
+    #path('cars/<str:car_manufacturer>', views.selectCar, name = 'carModelSelect'),
+    path('cars/<str:car_manufacturer>/results', views.carResultsView, name = 'carModelChoices')
 ]

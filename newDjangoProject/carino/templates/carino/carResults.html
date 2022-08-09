@@ -1,0 +1,8 @@
+<h1>{{ carManufacturer }}</h1>
+
+<ul>
+{% for car_model, votes in carModelsDict.items %}
+    <li>{{ car_model }} -- {{ votes }} vote{{ votes|pluralize }}</li>
+{% endfor %}
+</ul>
+

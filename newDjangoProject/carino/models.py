@@ -39,3 +39,9 @@ class Car(models.Model):
         return self.manufacturer + '-' + self.car_model + '-' + str(self.price) + '-' + str(self.production_year)
 
 
+class CarChoice(models.Model):
+    car_model = models.CharField(primary_key=True, max_length=50)
+    votes = models.IntegerField(default=0)
+
+    def __str__(self) -> str:
+        return self.car_model + str(self.votes)

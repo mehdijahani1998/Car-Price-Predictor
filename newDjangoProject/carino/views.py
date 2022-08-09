@@ -7,7 +7,7 @@ from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.views import generic
 
-from .models import Car, CarChoice ,Question, Choice
+from .models import Car ,Question, Choice
 
 class IndexView(generic.ListView):
     template_name = 'carino/index.html'

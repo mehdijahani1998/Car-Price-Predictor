@@ -30,7 +30,7 @@ class ResultsView(generic.DetailView):
 
 def vote(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
-   
+
     try:
         selected_choice = question.choice_set.get(pk=request.POST['choice'])
     
@@ -61,28 +61,9 @@ class CarsListView(generic.ListView):
         querySetresult = Car.objects.values_list('manufacturer', 'car_model').distinct()
         return querySetresult
 
-# def selectCar(request, carManufacturer):
-#     car = get_object_or_404(Car, pk=carManufacturer)
-   
-#     try:
-#         selected_choice = Car.objects.filter(manufacturer = 'honda').values_list('car_model').distinct()
-#         selected_choice = car.choice_set.get(pk=request.POST['choice'])
-
+def selectCar(request, car_manufacturer):
     
-#     except (KeyError, Choice.DoesNotExist):
-#         # Redisplay the question voting form.
-#         return render(request, 'carino/carDetail.html', {
-#             'car': car,
-#             'error_message': "hichi entekhab nakardi ke...",
-#         })
-    
-#     else:
-#         selected_choice.votes += 1
-#         selected_choice.save()
-#         # Always return an HttpResponseRedirect after successfully dealing
-#         # with POST data. This prevents data from being posted twice if a
-#         # user hits the Back button.
-#         return HttpResponseRedirect(reverse('carino:doctorresults', args=(question.id,)))
+    return HttpResponseRedirect(reverse('carino:doctorresults', args=(question.id,)))
 
 def carResultsView(request, car_manufacturer):
     availableModels = Car.objects.filter(manufacturer = car_manufacturer).values_list('car_model').distinct()
@@ -105,3 +86,15 @@ def carResultsView(request, car_manufacturer):
     }
 
     return render(request, 'carino/carResults.html', context)
+
+def showCarDetails(request, car_manufacturer):
+    availableModels = Car.objects.filter(manufacturer = car_manufacturer).values_list('car_model').distinct()
+    availableCategories = Car.objects.filter(manufacturer = car_manufacturer).values_list('category').distinct()
+    
+    context = {
+        'carModels' : availableModels,
+        'carCategories' : availableCategories,
+        'carManufacturer' : car_manufacturer
+    }
+
+    return render(request, 'carino/carDetail.html', context)

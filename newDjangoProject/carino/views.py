@@ -58,31 +58,57 @@ class CarsListView(generic.ListView):
     context_object_name = 'cars_list'
     def get_queryset(self):
         """Return all cars in the database."""
-        querySetresult = Car.objects.values_list('manufacturer', 'car_model').distinct()
+        querySetresult = Car.objects.values_list('manufacturer').distinct()
         return querySetresult
 
 def selectCar(request, car_manufacturer):
+    try:
+        carModel = request.POST['model_choice']
+        carCtg = request.POST['cat_choice']
+        carProYear = int(request.POST['year_field'])
+        carMileage = int(request.POST['mileage_field'])
+
+    except (KeyError):
+        availableModels = Car.objects.filter(manufacturer = car_manufacturer).values_list('car_model').distinct()
+        availableCategories = Car.objects.filter(manufacturer = car_manufacturer).values_list('category').distinct()
     
-    return HttpResponseRedirect(reverse('carino:doctorresults', args=(question.id,)))
+        context = {
+            'carModels' : availableModels,
+            'carCategories' : availableCategories,
+            'carManufacturer' : car_manufacturer,
+            'error_message': "hichi entekhab nakardi ke...",
+        }
+        return render(request, 'carino/carDetail.html', context)
+    
+    else:
+
+        context = {
+            'carManufacturer': car_manufacturer,
+            'car_model' : carModel,
+            'car_category' : carCtg,
+            'prod_year' : carProYear,
+            'mileage' : carMileage,
+            'predicted_price': 10000
+        }
+
+        return render(request, 'carino/carResults.html', context)
+
+    #return HttpResponseRedirect(reverse('carino:doctorresults', args=(question.id,)))
 
 def carResultsView(request, car_manufacturer):
-    availableModels = Car.objects.filter(manufacturer = car_manufacturer).values_list('car_model').distinct()
-    availableModelsList = [availableModels[i][0] for i in range(len(availableModels))]
-    modelsVotes = {}
-    
-    for car_model in availableModelsList:
-        
-        try:
-            modelsVotes.update({car_model: CarChoice.objects.get(car_model = car_model).votes})
-        
-        except(CarChoice.DoesNotExist):
-            modelsVotes.update({car_model: 0})
-            cc = CarChoice(car_model = car_model, votes = 0)
-            cc.save()
+    try:
+        carModel = request.GET['model_choice']
+        carCtg = request.GET['cat_choice']
+        carProYear = int(request.GET['year_field'])
+        carMileage = int(request.GET['mileage_field'])
+
+    except (KeyError):
+        return render(request, 'carino/carDetail.html', {
+            'error_message': "hichi entekhab nakardi ke...",
+        })
     
     context = {
-        'carModelsDict' : modelsVotes,
-        'carManufacturer' : car_manufacturer
+        'carManufacturer' : car_manufacturer,
     }
 
     return render(request, 'carino/carResults.html', context)

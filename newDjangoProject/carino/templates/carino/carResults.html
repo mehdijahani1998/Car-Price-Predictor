@@ -1,8 +1,13 @@
-<h1>{{ carManufacturer }}</h1>
+<h1>Price prediction result</h1>
 
+<h2>your given specifications were:</h2>
 <ul>
-{% for car_model, votes in carModelsDict.items %}
-    <li>{{ car_model }} -- {{ votes }} vote{{ votes|pluralize }}</li>
-{% endfor %}
+    <li><strong>manufacturer and model: </strong> {{carManufacturer}} - {{car_model}}</li>
+    <li><strong>category: </strong> {{car_category}} </li>
+    <li><strong>production year and mileage: </strong> {{prod_year}} - {{mileage}}</li>
 </ul>
 
+<h2>predicted price is:</h2>
+<h3>{{predicted_price}}</h3>
+
+<a href="{% url 'carino:carsListView' %}">would you like to try again?</a>

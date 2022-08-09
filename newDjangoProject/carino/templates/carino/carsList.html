@@ -1,7 +1,7 @@
 {% if cars_list %}
     <ul>
     {% for car in cars_list %}
-    <li>{{ car.0 }} - {{ car.1 }}</li>
+    <li><a href="{% url 'carino:carModelDetail' car.0 %}"> {{car.0 }}</a> </li>
     {% endfor %}
     </ul>
 {% else %}

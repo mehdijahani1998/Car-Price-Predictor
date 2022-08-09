@@ -7,7 +7,8 @@ from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.views import generic
 
-from .models import Car, CarChoice ,Question, Choice
+from .pricePredictor import PricePredictor
+from .models import Car ,Question, Choice
 
 class IndexView(generic.ListView):
     template_name = 'carino/index.html'
@@ -81,6 +82,10 @@ def selectCar(request, car_manufacturer):
         return render(request, 'carino/carDetail.html', context)
     
     else:
+        
+        pp = PricePredictor(car_manufacturer)
+        pp.getPreparedPricePredictor()
+        predictedPrice = pp.estimatePrice(carModel, carCtg, carProYear, carMileage)
 
         context = {
             'carManufacturer': car_manufacturer,
@@ -88,8 +93,9 @@ def selectCar(request, car_manufacturer):
             'car_category' : carCtg,
             'prod_year' : carProYear,
             'mileage' : carMileage,
-            'predicted_price': 10000
+            'predicted_price': predictedPrice
         }
+        del pp
 
         return render(request, 'carino/carResults.html', context)
 

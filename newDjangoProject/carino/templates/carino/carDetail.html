@@ -1,0 +1,34 @@
+<form action="{% url 'carino:carModelSelect' carManufacturer %}" method="post">
+    {% csrf_token %}
+    <fieldset>
+        <legend><h1>select car model among available models for {{carManufacturer}}</h1></legend>
+        
+        {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+        
+        <h2>select desired model</h2>
+        {% for model in carModels%}
+            <input id="model_choice{{ forloop.counter }}" type="radio" name="model_choice" value="{{ model.0 }}">
+            <label for="model_choice{{ forloop.counter }}">{{ model.0 }}</label><br>
+        {% endfor %}
+        
+        <h2>select desired category</h2>
+        {% for category in carCategories%}
+            <input id="cat_choice{{ forloop.counter }}" type="radio" name="cat_choice" value="{{ category.0 }}">
+            <label for="cat_choice{{ forloop.counter }}">{{ category.0 }}</label><br>
+        {% endfor %}
+        
+        <h2>enter production year</h2>
+        <label for="production_year">Enter prodution_year: </label>
+        <input id="production_year" type="text" name="year_field" value="2022">
+
+        <h2>enter mileage</h2>
+        <label for="mileage">Enter mileage: </label>
+        <input id="mileage" type="text" name="mileage_field" value="10000">
+
+
+    </fieldset>
+    <input type="submit" value="search this model">
+</form>
+
+
+

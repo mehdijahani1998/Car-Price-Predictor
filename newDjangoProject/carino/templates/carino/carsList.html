@@ -1,0 +1,9 @@
+{% if cars_list %}
+    <ul>
+    {% for car in cars_list %}
+    <li><a href="{% url 'carino:carModelDetail' car.0 %}"> {{car.0 }}</a> </li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No car is in the list.</p>
+{% endif %}

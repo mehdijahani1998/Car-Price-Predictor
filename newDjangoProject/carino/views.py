@@ -7,7 +7,7 @@ from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.views import generic
 
-from .models import Question, Choice
+from .models import Car, CarChoice ,Question, Choice
 
 class IndexView(generic.ListView):
     template_name = 'carino/index.html'
@@ -30,7 +30,7 @@ class ResultsView(generic.DetailView):
 
 def vote(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
-   
+
     try:
         selected_choice = question.choice_set.get(pk=request.POST['choice'])
     
@@ -48,3 +48,79 @@ def vote(request, question_id):
         # with POST data. This prevents data from being posted twice if a
         # user hits the Back button.
         return HttpResponseRedirect(reverse('carino:doctorresults', args=(question.id,)))
+
+### carino main pages come here. everything before that was from django tutorial itself.
+
+class CarsListView(generic.ListView):
+    model = Car
+    template_name = 'carino/carsList.html'
+    
+    context_object_name = 'cars_list'
+    def get_queryset(self):
+        """Return all cars in the database."""
+        querySetresult = Car.objects.values_list('manufacturer').distinct()
+        return querySetresult
+
+def selectCar(request, car_manufacturer):
+    try:
+        carModel = request.POST['model_choice']
+        carCtg = request.POST['cat_choice']
+        carProYear = int(request.POST['year_field'])
+        carMileage = int(request.POST['mileage_field'])
+
+    except (KeyError):
+        availableModels = Car.objects.filter(manufacturer = car_manufacturer).values_list('car_model').distinct()
+        availableCategories = Car.objects.filter(manufacturer = car_manufacturer).values_list('category').distinct()
+    
+        context = {
+            'carModels' : availableModels,
+            'carCategories' : availableCategories,
+            'carManufacturer' : car_manufacturer,
+            'error_message': "hichi entekhab nakardi ke...",
+        }
+        return render(request, 'carino/carDetail.html', context)
+    
+    else:
+
+        context = {
+            'carManufacturer': car_manufacturer,
+            'car_model' : carModel,
+            'car_category' : carCtg,
+            'prod_year' : carProYear,
+            'mileage' : carMileage,
+            'predicted_price': 10000
+        }
+
+        return render(request, 'carino/carResults.html', context)
+
+    #return HttpResponseRedirect(reverse('carino:doctorresults', args=(question.id,)))
+
+def carResultsView(request, car_manufacturer):
+    try:
+        carModel = request.GET['model_choice']
+        carCtg = request.GET['cat_choice']
+        carProYear = int(request.GET['year_field'])
+        carMileage = int(request.GET['mileage_field'])
+
+    except (KeyError):
+        return render(request, 'carino/carDetail.html', {
+            'error_message': "hichi entekhab nakardi ke...",
+        })
+    
+    context = {
+        'carManufacturer' : car_manufacturer,
+    }
+
+    return render(request, 'carino/carResults.html', context)
+
+def showCarDetails(request, car_manufacturer):
+    availableModels = Car.objects.filter(manufacturer = car_manufacturer).values_list('car_model').distinct()
+    availableCategories = Car.objects.filter(manufacturer = car_manufacturer).values_list('category').distinct()
+    
+    context = {
+        'carModels' : availableModels,
+        'carCategories' : availableCategories,
+        'carManufacturer' : car_manufacturer
+    }
+
+    return render(request, 'carino/carDetail.html', context)

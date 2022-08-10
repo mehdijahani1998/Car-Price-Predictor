@@ -1,92 +1,50 @@
-# car price predictor
+# Car Price Predictor Web Service
 
-A simple Django web service designed to guess what price is suitable for a car given its data. Raw data came from the truecar website and we use a simple decision tree based on scikit library.
+This is a simple website that helps you estimate a used car price. Dataset is derived from "truecar" website.
 
-## Getting started
+## Pages
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+### Main Page
+```
+localhost:8000/carino/cars
+```
+The main page of the website shows you a list of available manufacturers. If you want to add a manufacturer you can click on "Do you want to add more records?".
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
-
-## Add your files
-
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+### Select Car Details
 
 ```
-cd existing_repo
-git remote add origin https://hamgit.ir/mehdijahani199815/car-price-predictor.git
-git branch -M main
-git push -uf origin main
+localhost:8000/carino/cars/<str:car_manufacturer>
+```
+After you selected the manufacturer you enter the car details page. On this page, you can choose the model, category, production year, and mileage of your car. After you click on the "search this model" button, you can see the estimated price of your car.
+
+### Add More Records to the Database
+
+```
+localhost:8000/carino/cars/add_record
+```
+You can directly add more records to the database in this URL. You just need to enter the manufacturer's name and the number of pages that you need to be scraped from truecar website. Note that all letters have to be lowercase in the manufacturer's name.
+
+## Structure
+This project is created using Django. Therefore, it follows the same famous structure of views, models, and templates. However, there are two additional scripts used in the project that provide scraping and prediction services.
+
+### Data Collector
+Collecting data is done using beautiful soup [`bs4`](https://www.crummy.com/software/BeautifulSoup/bs4/doc/). There are two methods for Data collector object. 
+- One is `getSoupsResultsFromTrueCar` which gets the manufacturer's name and number of pages then reads data from truecar website and returns a soup object containing the raw result.
+- The second method is `insertFromSoupToDB` which also gets the manufacturer's name and number of pages and by using `getSoupsResultsFromTrueCar` retrieves data. It then extracts specific data from the soup object and inserts the result into the database.
+
+### Price Predictor
+We use [`scikit-learn`](https://scikit-learn.org/stable/install.html) to predict a car price based on given information. `PricePredictor` object reads data from the database with `fillQuerySet` method. It turns retrieved data into a 2D list using `fillSpecificationLists` method. Cars specifications are stored in `carsList` and their corresponding prices are stored in `priceList`.
+
+Since the scikit-learn classifier works with 2D lists and only gets integer input, we have to turn string values into integers. By using `fillSpecificationsDicts` method we use hashmap structure to turn model and category values into integers.
+
+In the end `trainCLF` method trains a decision tree based on retrieved data from database and finally `estimatePrice` is used to predict a car's price based on its specifications.
+
+## Requirements and Dependencies
+Requirements are available in `requirements.txt`. You can directly install them with this command:
+```bash
+pip install -r requirements.txt
 ```
 
-## Integrate with your tools
-
-- [ ] [Set up project integrations](https://hamgit.ir/mehdijahani199815/car-price-predictor/-/settings/integrations)
-
-## Collaborate with your team
-
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Automatically merge when pipeline succeeds](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
-
-## Test and Deploy
-
-Use the built-in continuous integration in GitLab.
-
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
-
-***
-
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thank you to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+---
+## Important Note
+Part of this project is the implementation of [Django tutorial](https://docs.djangoproject.com/en/4.0/intro/tutorial01/). Please ignore those parts that aren't related to the price prediction part.

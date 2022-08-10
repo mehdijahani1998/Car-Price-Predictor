@@ -135,7 +135,12 @@ def showCarDetails (request, car_manufacturer):
 class AwesomeView(View) :
 
     def get(self, request):
-        return render(request, 'carino/addCarRecord.html')
+        try:
+            msg = request.session.get('msg', False)
+        except (KeyError):  
+            msg = None
+        if ( msg ) : del(request.session['msg'])
+        return render(request, 'carino/addCarRecord.html', {'msg':msg})
 
     def post(self, request):
         carManufacturer = request.POST['manf']
@@ -145,4 +150,6 @@ class AwesomeView(View) :
         dataCollector.insertFromSoupToDB(carManufacturer, numberOfPages)
 
         del dataCollector
-        return  (request.path)
+        msg = 'added records successfuly :)'
+        request.session['msg'] = msg
+        return redirect(request.path)

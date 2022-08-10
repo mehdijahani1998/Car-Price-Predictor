@@ -3,6 +3,10 @@
     <fieldset>
         <legend><h1>select car model among available models for {{carManufacturer}}</h1></legend>
         
+        {% if msg %}
+        <p>{{ msg }}</p>
+        {% endif %}
+
         <h2>Enter manufacturer name</h2>
         <label for="manufacturer_name">Manufacturer: </label>
         <input id="manufacturer_name" type="text" name="manf" value="toyota">

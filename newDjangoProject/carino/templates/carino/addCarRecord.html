@@ -1,0 +1,20 @@
+<form action="{% url 'carino:addMoreRecords' %}" method="post">
+    {% csrf_token %}
+    <fieldset>
+        <legend><h1>select car model among available models for {{carManufacturer}}</h1></legend>
+        
+        {% if msg %}
+        <p>{{ msg }}</p>
+        {% endif %}
+
+        <h2>Enter manufacturer name</h2>
+        <label for="manufacturer_name">Manufacturer: </label>
+        <input id="manufacturer_name" type="text" name="manf" value="toyota">
+
+        <h2>Enter number of pages you want to be searched: </h2>
+        <label for="pages_num">Pages: </label>
+        <input id="pages_num" type="text" name="number_of_pages" value="25">
+
+    </fieldset>
+    <input type="submit" value="add more records">
+</form>
